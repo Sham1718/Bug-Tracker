@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project_service.model.project_Role.OWNER;
+
 @Service
 @Transactional
 public class projectServiceImpl implements projectService{
@@ -46,7 +48,7 @@ public class projectServiceImpl implements projectService{
         project_member member=new project_member();
         member.setProjectId(project.getId());
         member.setUserId(userId);
-        member.setRole(project_Role.OWNER);
+        member.setRole(OWNER);
 
         memeberRepository.save(member);
 
@@ -79,7 +81,7 @@ public class projectServiceImpl implements projectService{
        project project =repository.findById(projectId)
                .orElseThrow(()->new ResourceNotFound("Project not found..!"));
        memeberRepository.findByProjectIdAndUserIdAndRoleIn(projectId,userId,
-               List.of(project_Role.OWNER,project_Role.MANAGER))
+               List.of(OWNER,project_Role.MANAGER))
                .orElseThrow(()->
                        new AccessDeniedException("Access denied: User not a project Owner or Manager."));
 
@@ -94,12 +96,12 @@ public class projectServiceImpl implements projectService{
                 .orElseThrow(()->new ResourceNotFound("Project Not Exits.."));
 
         memeberRepository.findByProjectIdAndUserIdAndRoleIn(projectId,requesterId,
-                List.of(project_Role.OWNER,project_Role.MANAGER))
+                List.of(OWNER,project_Role.MANAGER))
                 .orElseThrow(()->new AccessDeniedException("Only Owner and Manager Allowed to Add Member..!"));
         if (memeberRepository.existsByProjectIdAndUserId(projectId,targetedUserId)){
             throw  new IllegalArgumentException("Already a project Member..!");
         }
-        if (role==project_Role.OWNER){
+        if (role== OWNER){
             throw  new IllegalArgumentException("Cannot Assign Owner");
         }
 
@@ -120,5 +122,28 @@ public class projectServiceImpl implements projectService{
       memeberRepository.findByProjectIdAndUserId(projectId,userId)
               .orElseThrow(()->new AccessDeniedException("User Not in Project"));
         return memeberRepository.findByProjectId(projectId);
+    }
+
+    @Override
+    public void updateMember(Long projectId, Long targetedUserId, project_Role role, Long requesterId) {
+        repository.findById(projectId)
+                .orElseThrow(()->new ResourceNotFound("Project Not Exists.."));
+       project_member member= memeberRepository.findByProjectIdAndUserId(projectId,requesterId)
+                .orElseThrow(()->new AccessDeniedException("User is Not Member of Project"));
+        if (member.getRole()!= OWNER){
+            throw new AccessDeniedException("Only Owner Can Update User Role..");
+        }
+        project_member target =memeberRepository.findByProjectIdAndUserId(projectId,targetedUserId)
+                .orElseThrow(()->new AccessDeniedException("User not member in project.."));
+
+        if (role==OWNER){
+            throw new IllegalArgumentException("Cannot assign OWNER role..");
+        }
+        if (targetedUserId.equals(requesterId)){
+            throw new IllegalArgumentException("OWNER cannot change own role");
+        }
+
+        target.setRole(role);
+        memeberRepository.save(target);
     }
 }

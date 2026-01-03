@@ -13,4 +13,5 @@ public interface projectService {
     project updateProject(Long projectId,String name ,String description,Long userId);
     void addMember(Long projectId, Long targetedUserId , project_Role role, Long requesterId);
     List<project_member>members(Long projectId,Long userId);
+    void updateMember(Long projectId, Long targetedUserId,project_Role role ,Long requesterId);
 }

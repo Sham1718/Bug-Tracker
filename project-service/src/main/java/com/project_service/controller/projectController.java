@@ -3,6 +3,7 @@ package com.project_service.controller;
 import com.project_service.dto.CreateProjectRequest;
 import com.project_service.dto.addMemberRequest;
 import com.project_service.dto.updateProject;
+import com.project_service.dto.updateRole;
 import com.project_service.model.project;
 import com.project_service.model.project_member;
 import com.project_service.service.projectService;
@@ -77,6 +78,15 @@ public class projectController {
         return ResponseEntity.ok(
                 service.members(projectId,userId)
         );
+    }
+    @PutMapping("/{projectId}/member/role")
+    public ResponseEntity<String> updateRole (
+            @PathVariable Long projectId,
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody updateRole role
+    ){
+        service.updateMember(projectId,role.getUserId(),role.getRole(),userId);
+         return ResponseEntity.ok("updated Role..");
     }
 
 }
