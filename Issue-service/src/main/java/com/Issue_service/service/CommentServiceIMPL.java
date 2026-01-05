@@ -17,11 +17,13 @@ public class CommentServiceIMPL implements CommentService {
     private final CommentRepository repository;
     private final IssueRepository issueRepository;
     private final ProjectMemberRepository memberRepository;
+    private final NotificationClient client;
 
-    public CommentServiceIMPL(CommentRepository repository, IssueRepository issueRepository, ProjectMemberRepository memberRepository) {
+    public CommentServiceIMPL(CommentRepository repository, IssueRepository issueRepository, ProjectMemberRepository memberRepository, NotificationClient client) {
         this.repository = repository;
         this.issueRepository = issueRepository;
         this.memberRepository = memberRepository;
+        this.client = client;
     }
 
     @Override
@@ -53,6 +55,11 @@ public class CommentServiceIMPL implements CommentService {
         comment.setIssueId(issueId);
         comment.setContent(content);
         comment.setUserId(userId);
+        client.sendEmail(
+                "sbharaskar8485@gmail.com",
+                "New Comment Added",
+                "A new comment added to issue "+issue.getTitle()
+        );
         return repository.save(comment);
     }
 }

@@ -17,10 +17,12 @@ import java.util.List;
 public class IssueServiceIMPL implements IssueService{
     private final IssueRepository repository;
     private final ProjectMemberRepository memberRepository;
+    private final NotificationClient client;
 
-    public IssueServiceIMPL(IssueRepository repository, ProjectMemberRepository memberRepository) {
+    public IssueServiceIMPL(IssueRepository repository, ProjectMemberRepository memberRepository, NotificationClient client) {
         this.repository = repository;
         this.memberRepository = memberRepository;
+        this.client = client;
     }
 
 
@@ -35,6 +37,13 @@ public class IssueServiceIMPL implements IssueService{
 
         if (!isMember){
             throw new AccessDeniedException("User is not a project member");
+        }
+        if (request.getAssigneId()!=null){
+            client.sendEmail(
+                    "sbharaskar8485@gmail.com",
+                    "Issue Assigned",
+                    "You have been assignee new Issue " + request.getTitle()
+            );
         }
         Issue issue = new Issue();
         issue.setProjectId(request.getProjectId());
@@ -94,4 +103,6 @@ public class IssueServiceIMPL implements IssueService{
         issue.setAssigneId(assigneId);
         return issue;
     }
+
+
 }
