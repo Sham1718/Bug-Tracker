@@ -9,6 +9,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.userservice.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -21,16 +22,17 @@ import java.util.Date;
 public class JwtService {
     private final JwtConfig jwtConfig;
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(User user){
         try {
             JWSSigner signer =new MACSigner(jwtConfig.getScrete().getBytes());
             Instant now= Instant.now();
 
             JWTClaimsSet Claims =new JWTClaimsSet.Builder()
-                    .subject(userDetails.getUsername())
+                    .subject(user.getUsername())
                     .issueTime(Date.from(now))
                     .expirationTime(Date.from(now.plusSeconds(3600)))
-                    .claim("role",userDetails.getAuthorities().toArray()[0].toString())
+                    .claim("userId",user.getId())
+                    .claim("role",user.getRole())
                     .build();
 
             SignedJWT signedJWT =new SignedJWT(

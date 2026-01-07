@@ -34,7 +34,7 @@ public class AuthService {
         repository.save(user);
 
         CustomUserDetails userDetails = new CustomUserDetails(user);
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(user);
         return new AuthResponse(token);
     }
 
@@ -49,7 +49,7 @@ public class AuthService {
         User user=repository.findByEmail(request.getEmail()).orElseThrow(()->new RuntimeException("User Not found"));
 
         CustomUserDetails userDetails = new CustomUserDetails(user);
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(user);
         return new AuthResponse(token);
     }
 
@@ -63,7 +63,7 @@ public class AuthService {
         repository.save(user);
 
         CustomUserDetails userDetails =new CustomUserDetails(user);
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(user);
         return new AuthResponse(token);
 
     }
