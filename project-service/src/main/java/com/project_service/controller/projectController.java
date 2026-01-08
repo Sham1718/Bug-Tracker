@@ -26,7 +26,7 @@ public class projectController {
                                                  @RequestHeader("X-User-Id") Long userId){
         project project =service.createProject(
                 request.getName(),
-                request.getProjectKeys(),
+                request.getProjectKeys().toUpperCase(),
                 request.getDescription(),
                 userId
         );

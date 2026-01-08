@@ -27,9 +27,9 @@ public class IssueServiceIMPL implements IssueService{
 
 
     @Override
-    public Issue createIssue(CreateIssueRequest request, Long userId) {
-        boolean isMember = memberRepository.existsByProjectIdAndUserId(request.getProjectId(),userId);
-        boolean isProjectExists= memberRepository.existsByProjectId(request.getProjectId());
+    public Issue createIssue(CreateIssueRequest request, Long userId,Long projectId) {
+        boolean isMember = memberRepository.existsByProjectIdAndUserId(projectId,userId);
+        boolean isProjectExists= memberRepository.existsByProjectId(projectId);
 
         if (!isProjectExists){
             throw new AccessDeniedException("Project not Exists..");
@@ -46,7 +46,7 @@ public class IssueServiceIMPL implements IssueService{
             );
         }
         Issue issue = new Issue();
-        issue.setProjectId(request.getProjectId());
+        issue.setProjectId(projectId);
         issue.setTitle(request.getTitle());
         issue.setDescription(request.getDescription());
         issue.setPriority(request.getPriority());

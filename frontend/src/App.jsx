@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import ProjectDetails from './pages/ProjectDetails'
 import CreateProject from './pages/CreateProject'
 import Projects from './pages/Projects'
+import CreateIssue from './pages/CreateIssue'
 
 
 function App() {
@@ -39,6 +40,18 @@ function App() {
          <Route path='/projects' element={
           <ProtectedRoute>
             <Projects/>
+          </ProtectedRoute>
+        }
+         />
+         <Route path='/projects/:projectId' element={
+          <ProtectedRoute>
+            <ProjectDetails/>
+          </ProtectedRoute>
+        }
+         />
+         <Route path='/projects/:projectId/createIssue' element={
+          <ProtectedRoute>
+            <CreateIssue/>
           </ProtectedRoute>
         }
          />

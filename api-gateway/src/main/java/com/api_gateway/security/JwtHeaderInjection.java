@@ -21,18 +21,30 @@ public class JwtHeaderInjection implements GlobalFilter ,Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request =exchange.getRequest();
-        String authHeader =request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-        if (authHeader!=null&& !authHeader.startsWith("Bearer ")){
+        String path = exchange.getRequest().getURI().getPath();
+
+        // 1️⃣ Skip auth endpoints
+        if (path.startsWith("/auth")) {
             return chain.filter(exchange);
         }
 
-        String token=authHeader.substring(7);
-        if (!jwtService.isTokenValid(token)){
+        ServerHttpRequest request = exchange.getRequest();
+        String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+
+        // 2️⃣ No Authorization header or wrong format → just forward
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return chain.filter(exchange);
         }
 
+        String token = authHeader.substring(7);
+
+        // 3️⃣ Invalid token → forward (or block if you want later)
+        if (!jwtService.isTokenValid(token)) {
+            return chain.filter(exchange);
+        }
+
+        // 4️⃣ Extract userId
         Long userId = jwtService.extractClaim(
                 token,
                 claims -> {
@@ -44,11 +56,14 @@ public class JwtHeaderInjection implements GlobalFilter ,Ordered {
                 }
         );
 
+        // 5️⃣ Inject header
         ServerHttpRequest mutatedRequest = request.mutate()
-                .header("X-User-Id",String.valueOf(userId))
+                .header("X-User-Id", String.valueOf(userId))
                 .build();
+
         return chain.filter(exchange.mutate().request(mutatedRequest).build());
     }
+
 
     @Override
     public int getOrder() {

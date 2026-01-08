@@ -21,12 +21,13 @@ public class IssueController {
         this.serviceIMPL = serviceIMPL;
     }
 
-    @PostMapping
+    @PostMapping("/projects/{projectId}")
     public ResponseEntity<Issue> createIssue(
+            @PathVariable Long projectId,
             @RequestBody CreateIssueRequest request,
             @RequestHeader("X-User-Id") Long userId
             ){
-            Issue issue = serviceIMPL.createIssue(request,userId);
+            Issue issue = serviceIMPL.createIssue(request,userId,projectId);
             return new ResponseEntity<>(issue, HttpStatus.CREATED);
     }
 
