@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -86,22 +87,66 @@ public class IssueServiceIMPL implements IssueService{
 
     @Override
     public Issue updateAssignee(Long issueId, Long assigneId, Long userId) {
-        Issue issue =repository.findById(issueId)
-                .orElseThrow(()->new ResourceNotFound("Issue Not Found.."));
-        boolean isProjectExist=memberRepository.existsByProjectIdAndUserId(issue.getProjectId(),userId);
-        if (!isProjectExist){
-            throw new AccessDeniedException("User is not member in project");
+
+        Issue issue = repository.findById(issueId)
+                .orElseThrow(() -> new ResourceNotFound("Issue not found"));
+
+        // check user is member of project
+        boolean isMember = memberRepository
+                .existsByProjectIdAndUserId(issue.getProjectId(), userId);
+
+        if (!isMember) {
+            throw new AccessDeniedException("User is not a project member");
         }
 
-        if (assigneId!=null) {
-            boolean isMember = memberRepository.existsByProjectIdAndUserId(issue.getProjectId(),assigneId);
-            if (!isMember){
-                throw new AccessDeniedException("Assignee is not a project Member");
+        // validate assignee belongs to same project
+        if (assigneId != null) {
+            boolean isAssigneeMember =
+                    memberRepository.existsByProjectIdAndUserId(
+                            issue.getProjectId(), assigneId);
+            if (!isAssigneeMember) {
+                throw new AccessDeniedException("Assignee is not a project member");
             }
         }
-
         issue.setAssigneId(assigneId);
-        return issue;
+        return repository.save(issue);
+    }
+
+
+    @Override
+    public Issue getIssueBYId(Long id, Long projectId,Long userId) {
+        boolean isProjectExists= memberRepository.existsByProjectId(projectId);
+        boolean isMember=memberRepository.existsByProjectIdAndUserId(projectId,userId);
+        if (!isProjectExists){
+            throw new AccessDeniedException("Project not Exists..");
+        }
+        if (!isMember){
+            throw new AccessDeniedException("User is not a project member");
+        }
+        return repository.findByIdAndProjectId(id,projectId);
+
+    }
+
+    @Override
+    public Issue updateDescription(Long issueId, String description, Long userId) {
+        Issue issue = repository.findById(issueId)
+                .orElseThrow(() -> new ResourceNotFound("Issue not found"));
+
+        // check user is member of project
+        boolean isMember = memberRepository
+                .existsByProjectIdAndUserId(issue.getProjectId(), userId);
+
+        if (!isMember) {
+            throw new AccessDeniedException("User is not a project member");
+        }
+
+        if(description.isEmpty()){
+            throw new  ResourceNotFound("Description is empty");
+        }
+
+        issue.setDescription(description);
+
+        return repository.save(issue);
     }
 
 

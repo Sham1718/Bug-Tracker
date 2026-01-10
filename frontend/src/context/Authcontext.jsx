@@ -19,6 +19,13 @@ export const AuthProvider=({children})=>{
         setLoading(false)
     },[])
 
+    const registerToken=(jwtToken)=>{
+        setToken(jwtToken)
+
+        localStorage.setItem("token",jwtToken)
+
+    }
+
     const login=(jwtToken)=>{
         // setUser(userdata)
         setToken(jwtToken)
@@ -40,6 +47,7 @@ export const AuthProvider=({children})=>{
         token,
         login,
         logout,
+        registerToken,
         isAuthenticate : !! token
 
     }

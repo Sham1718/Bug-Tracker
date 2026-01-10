@@ -16,7 +16,6 @@ const Login = () => {
           email :email,
           password :pass
         });
-        console.log(res.data);
         
        login(res.data.token)
         navigate("/dashboard")
@@ -34,6 +33,7 @@ const Login = () => {
      <input type="password" value={pass} onChange={(e)=>{setPass(e.target.value)}}  className=' border'/>
      <button type='submit'>Login</button>
      </form>
+     if not user <button onClick={()=>navigate("/register")}>register</button>
     </div>
   )
 }

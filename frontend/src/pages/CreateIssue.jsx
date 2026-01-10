@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { createIssue } from '../utils/issueapi'
+import { createIssue } from '../api/issue';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const CreateIssue = () => {
@@ -31,11 +31,23 @@ const CreateIssue = () => {
       <form onSubmit={handleCreate}>
         title:
         <input type="text" value={title} onChange={(e)=>setTitle(e.target.value)} />
-        title:
+        Description:
         <input type="text"  value={description} onChange={(e)=>setDescription(e.target.value)}/>
-        title:
-        <input type="text" value={priority} onChange={(e)=>setPriority(e.target.value)} />
-        title:
+        Priority:
+        <select
+  value={priority}
+  onChange={(e) => setPriority(e.target.value)}
+  required
+>
+  <option value="" disabled>
+    Select priority
+  </option>
+  <option value="LOW">LOW</option>
+  <option value="MEDIUM">MEDIUM</option>
+  <option value="HIGH">HIGH</option>
+</select>
+
+        Assignee Id:
         <input type="number" value={assigneId} onChange={(e)=>setAssigneId(Number(e.target.value))}/>
 
         <button type='submit'>create</button>

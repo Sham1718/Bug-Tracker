@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import api from '../utils/axiosInstance'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
-import { getissueByproject } from '../utils/issueapi'
+import { getissueByproject } from '../api/issue'
 
 const ProjectDetails = () => {
   const {projectId}=useParams();
@@ -47,7 +47,8 @@ const ProjectDetails = () => {
           <p>no issue found</p>
         ):(
           issues.map(issue=>(
-            <div key={issue.id}>
+            <div key={issue.id}
+            onClick={()=>{navigate(`/projects/${projectId}/${issue.id}`)}}>
               {issue.title}
             </div>
           ))

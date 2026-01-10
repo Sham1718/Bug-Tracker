@@ -3,6 +3,7 @@ package com.Issue_service.controller;
 
 import com.Issue_service.dto.AssignIssueUpdate;
 import com.Issue_service.dto.CreateIssueRequest;
+import com.Issue_service.dto.UpdateDescription;
 import com.Issue_service.dto.UpdateIssueStatus;
 import com.Issue_service.model.Issue;
 import com.Issue_service.service.IssueServiceIMPL;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/issues")
@@ -58,8 +60,31 @@ public class IssueController {
             ){
         System.out.println(request.getAssigneId());
         return ResponseEntity.ok(
-
                 serviceIMPL.updateAssignee(issueId,request.getAssigneId(),userId)
+        );
+    }
+
+    @GetMapping("/projects/{projectId}/{issueId}")
+    public ResponseEntity<Issue> getIssueByID(
+            @PathVariable Long projectId,
+            @PathVariable Long issueId,
+            @RequestHeader("X-User-Id") Long userId
+    ){
+        Issue issue= serviceIMPL.getIssueBYId(issueId,projectId,userId);
+        System.out.println(issue);
+        return ResponseEntity.ok(
+                issue
+        );
+    }
+
+    @PostMapping("/{issueId}/description")
+    public ResponseEntity<Issue> updatedesc(
+            @PathVariable Long issueId,
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody UpdateDescription request
+            ){
+        return ResponseEntity.ok(
+                serviceIMPL.updateDescription(issueId,request.getDescription(),userId)
         );
     }
 }

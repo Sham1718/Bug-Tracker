@@ -10,6 +10,7 @@ import ProjectDetails from './pages/ProjectDetails'
 import CreateProject from './pages/CreateProject'
 import Projects from './pages/Projects'
 import CreateIssue from './pages/CreateIssue'
+import IssueDetails from './pages/IssueDetails'
 
 
 function App() {
@@ -52,6 +53,12 @@ function App() {
          <Route path='/projects/:projectId/createIssue' element={
           <ProtectedRoute>
             <CreateIssue/>
+          </ProtectedRoute>
+        }
+         />
+         <Route path='/projects/:projectId/:issueId' element={
+          <ProtectedRoute>
+            <IssueDetails/>
           </ProtectedRoute>
         }
          />
