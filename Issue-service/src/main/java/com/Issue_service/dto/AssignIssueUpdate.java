@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AssignIssueUpdate {
-    private long assigneId;
+    private Long assigneId;
 }

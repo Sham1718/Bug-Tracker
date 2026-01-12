@@ -18,9 +18,9 @@ export const updateIssueAssignee=(issueid,assigneeId)=>{
 }
 
 export const getIssueById=(projectId,issueid)=>{
-    return api.get(`issues/projects/${projectId}/${issueid}`)
+    return api.get(`/issues/projects/${projectId}/${issueid}`)
 }
 
-export const updateIssueDescription =()=>{
- return null;
+export const updateIssueDescription =(issueid,description)=>{
+    return api.post(`/issues/${issueid}/description`,{description});
 }
