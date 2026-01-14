@@ -6,12 +6,12 @@ const DashBoard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div className=" flex bg-gray-100  ">
       {/* Sidebar - LEFT */}
-      <Sidebar />
+      <Sidebar/>
 
       {/* Main Content - RIGHT */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center main-content">
         <div className="bg-white p-8 rounded-md shadow w-full max-w-md text-center">
           <h2 className="text-2xl font-semibold mb-6">Dashboard</h2>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import api from "../utils/axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
-import { getissueByproject } from "../api/issue";
+import {getProjectById,getMember} from '../api/project'
+
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
@@ -9,17 +9,25 @@ const ProjectDetails = () => {
 
   const [project, setProject] = useState(null);
   const [issues, setIssues] = useState([]);
+  const[member,setMember]=useState([]);
 
   useEffect(() => {
-    api
-      .get(`/projects/${projectId}`)
-      .then((res) => setProject(res.data))
-      .catch((err) => console.log(err));
-
-    getissueByproject(projectId)
-      .then((res) => setIssues(res.data))
-      .catch((err) => console.log(err));
+    getProjectById(projectId)
+    .then((res)=>setProject(res.data))
+    .catch((e)=>console.log(e)
+    )
+    getMember(projectId)
+    .then((res)=>setMember(res.data))
+    .catch((e)=>console.log(e)
+    )
   }, [projectId]);
+
+  // console.log(project);
+  console.log(member);
+  console.log(member[0]);
+  
+  
+  
 
   if (!project) return <p className="p-6">Loading...</p>;
 
@@ -32,42 +40,22 @@ const ProjectDetails = () => {
           <p className="text-sm text-gray-500 mb-2">
             Key: {project.projectKeys}
           </p>
-          <p className="text-gray-700">{project.description}</p>
+          <p>createAT:{project.createdAt}</p>
+          <p>updatedAt:{project.updatedAt
+}</p>
+          <p className="text-gray-700">description:{project.description}</p>
+          {member.map((member)=>
+          <div>id:
+
+            {member.id}
+            <p>projectId:{member.projectId}</p>
+            <p> userId:{member.userId}</p>
+            <p>role:{member.role}</p>
+            <p>joinAt:{member.joinAt}</p>
+          </div>)}
         </div>
 
-        {/* Issues Section */}
-        <div className="bg-white p-6 rounded-md shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold">Issues</h3>
-            <button
-              onClick={() => navigate(`/projects/${projectId}/createIssue`)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Create Issue
-            </button>
-          </div>
-
-          {issues.length === 0 ? (
-            <p className="text-gray-500">No issues found</p>
-          ) : (
-            <div className="space-y-3">
-              {issues.map((issue) => (
-                <div
-                  key={issue.id}
-                  onClick={() =>
-                    navigate(`/projects/${projectId}/${issue.id}`)
-                  }
-                  className="p-4 border rounded cursor-pointer hover:bg-gray-50"
-                >
-                  <div className="font-medium">{issue.title}</div>
-                  <div className="text-sm text-gray-500">
-                    Status: {issue.status}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        
       </div>
     </div>
   );
