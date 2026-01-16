@@ -94,7 +94,6 @@ public class projectServiceImpl implements projectService{
     public void addMember(Long projectId, Long targetedUserId, project_Role role, Long requesterId) {
         project project=repository.findById(projectId)
                 .orElseThrow(()->new ResourceNotFound("Project Not Exits.."));
-
         memeberRepository.findByProjectIdAndUserIdAndRoleIn(projectId,requesterId,
                 List.of(OWNER,project_Role.MANAGER))
                 .orElseThrow(()->new AccessDeniedException("Only Owner and Manager Allowed to Add Member..!"));
@@ -104,14 +103,11 @@ public class projectServiceImpl implements projectService{
         if (role== OWNER){
             throw  new IllegalArgumentException("Cannot Assign Owner");
         }
-
         project_member member =new project_member();
         member.setProjectId(projectId);
         member.setUserId(targetedUserId);
         member.setRole(role);
-
        memeberRepository.save(member);
-
     }
 
     @Override

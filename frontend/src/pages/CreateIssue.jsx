@@ -21,7 +21,7 @@ const CreateIssue = () => {
       priority,
       assigneId,
     })
-      .then(() => navigate(`/projects/${projectId}`))
+      .then(() => navigate(`/projects/${projectId}/issues`))
       .catch((err) => console.log(err));
   };
 

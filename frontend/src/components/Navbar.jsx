@@ -39,7 +39,7 @@ const Navbar = () => {
           </button>
 
           <button
-            onClick={() => navigate("/projects/create")}
+            onClick={() => navigate("/createProject")}
             className="text-base bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             Create Project

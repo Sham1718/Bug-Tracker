@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import api from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import {createProject} from '../api/project'
+
 
 const CreateProject = () => {
   const [name, setName] = useState("");
@@ -11,13 +13,14 @@ const CreateProject = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post(`/projects`, {
+      await createProject({
         name,
         projectKeys,
         description,
       });
       navigate("/projects");
     } catch (err) {
+      alert("error while creating project")
       console.log(err);
     }
   };

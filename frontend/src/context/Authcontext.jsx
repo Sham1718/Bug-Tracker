@@ -1,19 +1,21 @@
 import React from 'react'
 import { useContext ,createContext,useState,useEffect } from 'react'
+import {jwtDecode} from "jwt-decode";
+
 
 const Authcontext = createContext(null)
 
 export const AuthProvider=({children})=>{
-    // const[user,setUser]=useState(null);
+    const[user,setUser]=useState(null);
     const[token,setToken]=useState(null);
     const[loading,setLoading]=useState(null);
 
     useEffect(()=>{
         const storetoken=localStorage.getItem("token")
-        // const storeuser=localStorage.getItem("user")
+        const storeuser=localStorage.getItem("user")
         if(storetoken){
             setToken(storetoken)
-            // setUser(JSON.parse(storeuser))
+            setUser(JSON.parse(storeuser))
         }
 
         setLoading(false)
@@ -31,19 +33,21 @@ export const AuthProvider=({children})=>{
         setToken(jwtToken)
 
         localStorage.setItem("token",jwtToken)
-        // localStorage.setItem("user",JSON.stringify(userdata))
+        setUser(jwtDecode(jwtToken));
     }
+    // console.log(user);
+    
 
     const logout=()=>{
         setToken(null)
-        // setUser(null)
+        setUser(null)
 
         localStorage.removeItem("token")
-        // localStorage.removeItem("user")
+        localStorage.removeItem("user")
     }
 
     const value={
-        // user,
+        user,
         token,
         login,
         logout,

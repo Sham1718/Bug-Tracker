@@ -18,7 +18,7 @@ const IssueDetails = () => {
   useEffect(() => {
     getIssueById(projectId, issueId)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         
         setIssue(res.data);
         setStatus(res.data.status);

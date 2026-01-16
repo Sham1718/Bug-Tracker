@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import api from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import { getAllProject } from "../api/project";
 
 const Projects = () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
 
   const fetchProjects = async () => {
-    const res = await api.get("/projects");
-    setProjects(res.data);
+   
+    getAllProject().then((res)=>setProjects(res.data))
   };
 
   useEffect(() => {

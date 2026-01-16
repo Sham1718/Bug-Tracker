@@ -10,6 +10,7 @@ import CreateProject from "./pages/CreateProject";
 import Projects from "./pages/Projects";
 import CreateIssue from "./pages/CreateIssue";
 import IssueDetails from "./pages/IssueDetails";
+import IssueList from './pages/IssueList';
 
 
 
@@ -65,6 +66,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateIssue />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:projectId/issues"
+          element={
+            <ProtectedRoute>
+              <IssueList/>
             </ProtectedRoute>
           }
         />
