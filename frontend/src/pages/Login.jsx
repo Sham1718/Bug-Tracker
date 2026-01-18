@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import api from "../utils/axiosInstance";
 import { useAuth } from "../context/Authcontext";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../api/auth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,17 +12,14 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const res = await api.post("/auth/login", {
-        email: email,
-        password: pass,
-      });
-
-      login(res.data.token);
-      navigate("/dashboard");
-    } catch (err) {
-      alert("Invalid Credentials!");
-    }
+    loginUser({
+      email:email,
+      password:pass})
+    .then((res)=>{login(res.data.token);
+    navigate("/dashboard");}
+  )
+    .catch((e)=>console.log(e)
+    )
   };
 
   return (

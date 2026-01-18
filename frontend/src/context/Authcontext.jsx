@@ -5,6 +5,7 @@ import {jwtDecode} from "jwt-decode";
 
 const Authcontext = createContext(null)
 
+
 export const AuthProvider=({children})=>{
     const[user,setUser]=useState(null);
     const[token,setToken]=useState(null);
@@ -41,6 +42,7 @@ export const AuthProvider=({children})=>{
     const logout=()=>{
         setToken(null)
         setUser(null)
+        
 
         localStorage.removeItem("token")
         localStorage.removeItem("user")

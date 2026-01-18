@@ -15,4 +15,5 @@ public interface IssueService {
     Issue updateAssignee(Long issueId, Long assigneID, Long userId);
     Issue getIssueBYId(Long id, Long projectId,Long userId);
     Issue updateDescription(Long issueId,String description, Long userId);
+    void deleteByProjectId(Long projectId);
 }

@@ -87,4 +87,12 @@ public class IssueController {
                 serviceIMPL.updateDescription(issueId,request.getDescription(),userId)
         );
     }
+
+    @DeleteMapping("/projects/{projectId}")
+    public ResponseEntity<String> deleteIssueByProjectId(
+            @PathVariable Long projectId
+    ){
+        serviceIMPL.deleteByProjectId(projectId);
+       return ResponseEntity.ok("deleted Issues");
+    }
 }

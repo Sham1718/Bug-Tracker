@@ -25,10 +25,12 @@ public class projectServiceImpl implements projectService{
 
     @Autowired
     private final ProjectMemeberRepository memeberRepository;
+    private final IssueClient client;
 
-    public projectServiceImpl(ProjectRepository repository,ProjectMemeberRepository memeberRepository){
+    public projectServiceImpl(ProjectRepository repository, ProjectMemeberRepository memeberRepository, IssueClient client){
         this.memeberRepository=memeberRepository;
         this.repository=repository;
+        this.client = client;
     }
 
     @Override
@@ -141,5 +143,19 @@ public class projectServiceImpl implements projectService{
 
         target.setRole(role);
         memeberRepository.save(target);
+    }
+
+    @Override
+    public void deleteProject(Long projectId, Long requesterId) {
+        project project =repository.findById(projectId)
+                .orElseThrow(()->new ResourceNotFound("project not exists"));
+        project_member member =memeberRepository.findByProjectIdAndUserId(projectId,requesterId)
+                .orElseThrow(()->new AccessDeniedException("user not a project member"));
+        if (member.getRole()!=OWNER){
+            throw new AccessDeniedException("Only Owner Can Delete project..");
+        }
+        client.deleteIssuesByProject(projectId);
+        memeberRepository.deleteByProjectId(projectId);
+        repository.delete(project);
     }
 }

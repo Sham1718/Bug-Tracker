@@ -6,7 +6,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-64  bg-white border-r shadow-sm p-4 flex flex-col  h-196">
+    <div className="w-64  bg-white border-r shadow-sm p-4 flex flex-col  h-196 my-19">
       
       {/* Logo / App Name */}
       <div

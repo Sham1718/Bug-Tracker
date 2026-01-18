@@ -1,81 +1,100 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/Authcontext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { token,isAuthenticate,logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    logout(),
     navigate("/");
   };
 
   return (
-    <nav className="w-full bg-white border-b shadow-sm  navbar">
-      <div className="max-w-full px-8 py-4 flex items-center">
+    <nav className="fixed  w-full h-19 bg-white border-b shadow-sm z-50">
+      <div className="px-8 h-full flex items-center justify-between">
 
-        {/* Left section */}
-        <div className="flex items-center gap-8">
-          {/* Logo */}
-          <div
-            className="text-2xl font-bold text-blue-600 cursor-pointer"
-            onClick={() => navigate("/dashboard")}
-          >
-            IssueFlow
-          </div>
-
-          {/* Nav links */}
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="text-base text-gray-700 hover:text-blue-600"
-          >
-            Home
-          </button>
-
-          <button
-            onClick={() => navigate("/projects")}
-            className="text-base text-gray-700 hover:text-blue-600"
-          >
-            Projects
-          </button>
-
-          <button
-            onClick={() => navigate("/createProject")}
-            className="text-base bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Create Project
-          </button>
+        {/* Logo */}
+        <div
+          className="text-2xl font-bold text-blue-600 cursor-pointer"
+          onClick={() => navigate(token ? "/dashboard" : "/")}
+        >
+          IssueFlow
         </div>
 
-        {/* Center search */}
-        <div className="flex-1 flex justify-center">
-          <input
+     
+        {!isAuthenticate && (
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate("/")}
+              className="text-gray-700 hover:text-blue-600"
+            >
+              Login
+            </button>
+
+            <button
+              onClick={() => navigate("/register")}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Register
+            </button>
+          </div>
+        )}
+
+        
+        {isAuthenticate && (
+          <>
+            {/* Center Nav */}
+            <div className="flex items-center gap-8">
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="text-gray-700 hover:text-blue-600"
+              >
+                Home
+              </button>
+
+              <button
+                onClick={() => navigate("/projects")}
+                className="text-gray-700 hover:text-blue-600"
+              >
+                Projects
+              </button>
+
+              <button
+                onClick={() => navigate("/createProject")}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Create Project
+              </button>
+            </div>
+
+            {/* Search */}
+            <div className="flex-1 flex justify-center">
+              <input
                 type="text"
                 placeholder="Search projects..."
-                className=" w-[32rem] border rounded-lg px-5 py-3 text-base focus:outline-none focus:ring h-[2.5rem]"
-        />
+                className="w-[32rem] border rounded-lg px-4 py-2 focus:outline-none focus:ring"
+              />
+            </div>
 
-        </div>
+            {/* Right Actions */}
+            <div className="flex items-center gap-4">
+              <button className="border px-2 py-1 rounded">🌙</button>
 
-        {/* Right actions */}
-        <div className="flex items-center gap-4">
-          {/* Dark / Light mode button (placeholder) */}
-          <button className="text-sm border px-2 py-1 rounded">
-            🌙
-          </button>
+              <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
+                U
+              </div>
 
-          {/* Dummy Avatar */}
-          <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-            U
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="text-sm bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Logout
-          </button>
-        </div>
-
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Logout
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </nav>
   );

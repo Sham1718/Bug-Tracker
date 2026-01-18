@@ -5,6 +5,7 @@ import com.Issue_service.exception.AccessDeniedException;
 import com.Issue_service.exception.ResourceNotFound;
 import com.Issue_service.model.Issue;
 import com.Issue_service.model.IssueStatus;
+import com.Issue_service.repository.CommentRepository;
 import com.Issue_service.repository.IssueRepository;
 import com.Issue_service.repository.ProjectMemberRepository;
 import jakarta.transaction.Transactional;
@@ -19,11 +20,13 @@ public class IssueServiceIMPL implements IssueService{
     private final IssueRepository repository;
     private final ProjectMemberRepository memberRepository;
     private final NotificationClient client;
+    private final CommentRepository commentRepository;
 
-    public IssueServiceIMPL(IssueRepository repository, ProjectMemberRepository memberRepository, NotificationClient client) {
+    public IssueServiceIMPL(IssueRepository repository, ProjectMemberRepository memberRepository, NotificationClient client, CommentRepository commentRepository) {
         this.repository = repository;
         this.memberRepository = memberRepository;
         this.client = client;
+        this.commentRepository = commentRepository;
     }
 
 
@@ -147,6 +150,15 @@ public class IssueServiceIMPL implements IssueService{
         issue.setDescription(description);
 
         return repository.save(issue);
+    }
+
+    @Override
+    public void deleteByProjectId(Long projectId) {
+        List<Issue> issues=repository.findByProjectId(projectId);
+        for (Issue issue :issues){
+            commentRepository.deleteByIssueId(issue.getId());
+        }
+        repository.deleteByProjectId(projectId);
     }
 
 

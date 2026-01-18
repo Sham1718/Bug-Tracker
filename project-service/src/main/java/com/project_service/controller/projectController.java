@@ -8,11 +8,13 @@ import com.project_service.model.project;
 import com.project_service.model.project_member;
 import com.project_service.service.projectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/projects")
@@ -87,6 +89,15 @@ public class projectController {
     ){
         service.updateMember(projectId,role.getUserId(),role.getRole(),userId);
          return ResponseEntity.ok("updated Role..");
+    }
+
+    @DeleteMapping("/{projectId}/delete")
+    public ResponseEntity<String> deleteProject(
+            @PathVariable Long projectId,
+            @RequestHeader("X-User-Id") Long userId
+    ){
+        service.deleteProject(projectId,userId);
+        return ResponseEntity.ok("Project deleted!");
     }
 
 }

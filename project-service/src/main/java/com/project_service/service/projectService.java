@@ -14,4 +14,5 @@ public interface projectService {
     void addMember(Long projectId, Long targetedUserId , project_Role role, Long requesterId);
     List<project_member>members(Long projectId,Long userId);
     void updateMember(Long projectId, Long targetedUserId,project_Role role ,Long requesterId);
+    void deleteProject(Long projectId,Long requesterId);
 }

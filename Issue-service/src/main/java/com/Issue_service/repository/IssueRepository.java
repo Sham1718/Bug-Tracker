@@ -13,5 +13,6 @@ import java.util.Optional;
 public interface IssueRepository extends JpaRepository<Issue,Long> {
     List<Issue>findByProjectId(Long projectId);
     Issue findByIdAndProjectId(Long id, Long projectId);
+    List<Issue> deleteByProjectId(Long projectId);
 
 }
