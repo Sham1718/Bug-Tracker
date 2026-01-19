@@ -11,6 +11,7 @@ import Projects from "./pages/Projects";
 import CreateIssue from "./pages/CreateIssue";
 import IssueDetails from "./pages/IssueDetails";
 import IssueList from './pages/IssueList';
+import ProjectSetting from './pages/ProjectSetting'
 
 
 
@@ -83,6 +84,14 @@ function App() {
           element={
             <ProtectedRoute>
               <IssueDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:projectId/settings"
+          element={
+            <ProtectedRoute>
+              <ProjectSetting/>
             </ProtectedRoute>
           }
         />

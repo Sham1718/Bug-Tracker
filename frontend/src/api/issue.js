@@ -13,8 +13,8 @@ export const updateIssueStatus=(issueid,status)=>{
    return api.patch(`/issues/${issueid}/status`,{status})
 }
 
-export const updateIssueAssignee=(issueid,assigneeId)=>{
-    return api.patch(`/issues/${issueid}/assignee`,{assigneeId})
+export const updateIssueAssignee=(issueid,assigneId)=>{
+    return api.patch(`/issues/${issueid}/assignee`,{assigneId})
 }
 
 export const getIssueById=(projectId,issueid)=>{

@@ -11,7 +11,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.project_service.model.project_Role.OWNER;
@@ -26,11 +28,13 @@ public class projectServiceImpl implements projectService{
     @Autowired
     private final ProjectMemeberRepository memeberRepository;
     private final IssueClient client;
+    private final UserClient userClient;
 
-    public projectServiceImpl(ProjectRepository repository, ProjectMemeberRepository memeberRepository, IssueClient client){
+    public projectServiceImpl(ProjectRepository repository, ProjectMemeberRepository memeberRepository, IssueClient client, UserClient userClient){
         this.memeberRepository=memeberRepository;
         this.repository=repository;
         this.client = client;
+        this.userClient = userClient;
     }
 
     @Override
@@ -157,5 +161,60 @@ public class projectServiceImpl implements projectService{
         client.deleteIssuesByProject(projectId);
         memeberRepository.deleteByProjectId(projectId);
         repository.delete(project);
+    }
+
+    @Override
+    public void addByEmail(Long projectId, String email, project_Role role, Long userId) {
+        project project =repository.findById(projectId)
+                .orElseThrow(()->new ResourceNotFound("project not exists"));
+
+        memeberRepository.findByProjectIdAndUserIdAndRoleIn(projectId,userId, List.of(project_Role.OWNER, project_Role.MANAGER))
+                .orElseThrow(()->new AccessDeniedException("only manager and owner can add members..!"));
+
+        Long targetUserId;
+        try {
+            targetUserId = userClient.getUserIdByEmail(email);
+        } catch (Exception e) {
+//            e.printStackTrace();
+            throw new ResourceNotFound("User not registered with this email");
+        }
+
+        if (memeberRepository.existsByProjectIdAndUserId(projectId,targetUserId)){
+            throw new IllegalArgumentException("user already a member!");
+        }
+        if (role== OWNER){
+            throw new IllegalArgumentException("Cannot assign owner role");
+        }
+        project_member member=new project_member();
+        member.setProjectId(projectId);
+        member.setRole(role);
+        member.setUserId(targetUserId);
+        memeberRepository.save(member);
+
+    }
+
+    @Override
+    public void deleteMember(Long projectId, Long targetedUserId, Long userId) {
+        project project =repository.findById(projectId)
+                .orElseThrow(()->new ResourceNotFound("project not exists"));
+
+       project_member member =memeberRepository.findByProjectIdAndUserId(projectId,userId)
+               .orElseThrow(()->new AccessDeniedException("Not a project member"));
+
+       if(member.getRole()!=OWNER){
+           throw  new AccessDeniedException("Only Owner can remove member ..! ");
+       }
+
+       if (targetedUserId.equals(userId)){
+           throw new AccessDeniedException("Owner cant remove self");
+       }
+
+       project_member targetMember= memeberRepository.findByProjectIdAndUserId(projectId,targetedUserId)
+               .orElseThrow(()->new AccessDeniedException("targeted user not a project member"));
+
+       if (targetMember.getRole()==OWNER){
+           throw new AccessDeniedException("Cannot remove Owner..!");
+       }
+        memeberRepository.deleteByProjectIdAndUserId(projectId,targetedUserId);
     }
 }

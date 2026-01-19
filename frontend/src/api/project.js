@@ -29,6 +29,14 @@ export const updateMemberRole=(projectId,data)=>{
     return api.put(`/projects/${projectId}/member/role`,data);
 }
 
+export const addMemberByEmail=(projectId,data)=>{
+  return api.put(`/projects/${projectId}/members/email`,data);
+}
+
+export const deleteMember=(projectId,userID)=>{
+  return api.delete(`/projects/${projectId}/member/delete/${userID}`)
+
+}
 /* =======================
    FUTURE APIs (EMPTY)
    DO NOT IMPLEMENT YET
@@ -36,15 +44,9 @@ export const updateMemberRole=(projectId,data)=>{
 
 // Project deletion (OWNER only)
 export const deleteProject = (projectId) => {
-  // backend pending
-  return api.delete(`/projects/${projectId}`);
+  return api.delete(`/projects/${projectId}/delete`);
 };
 
-// Project settings fetch (optional)
-export const getProjectSettings = (projectId) => {
-  // backend pending
-  return Promise.resolve();
-};
 
 // Project activity log (later)
 export const getProjectActivity = (projectId) => {

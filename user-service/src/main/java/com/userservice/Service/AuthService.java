@@ -68,4 +68,8 @@ public class AuthService {
 
     }
 
+    public Long getUserIdByEmail(String email) {
+
+        return repository.findByEmail(email).map(User :: getId).orElseThrow(()->new RuntimeException("user not found"));
+    }
 }

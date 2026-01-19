@@ -14,7 +14,7 @@ const IssueDetails = () => {
 
   const [issue, setIssue] = useState(null);
   const [status, setStatus] = useState("");
-  const [assigneeId, setAssigneeId] = useState("");
+  const [assigneeId, setAssigneeId] = useState(""); // KEEP STRING
   const [description, setDescription] = useState("");
 
   const [comments, setComments] = useState([]);
@@ -26,7 +26,11 @@ const IssueDetails = () => {
       .then((res) => {
         setIssue(res.data);
         setStatus(res.data.status);
-        setAssigneeId(res.data.assigneId ?? "");
+        setAssigneeId(
+          res.data.assigneId !== null && res.data.assigneId !== undefined
+            ? String(res.data.assigneId)
+            : ""
+        );
         setDescription(res.data.description ?? "");
       })
       .catch(() => alert("Failed to load issue"));
@@ -45,8 +49,13 @@ const IssueDetails = () => {
         updates.push(updateIssueDescription(issueId, description));
       }
 
-      if (String(assigneeId || "") !== String(issue.assigneId || "")) {
-        updates.push(updateIssueAssignee(issueId, assigneeId || null));
+      if (
+        assigneeId !== "" &&
+        String(assigneeId) !== String(issue.assigneId ?? "")
+      ) {
+        updates.push(
+          updateIssueAssignee(issueId, Number(assigneeId))
+        );
       }
 
       if (status !== issue.status) {
@@ -64,7 +73,7 @@ const IssueDetails = () => {
         ...prev,
         description,
         status,
-        assigneId: assigneeId || null,
+        assigneId: assigneeId !== "" ? Number(assigneeId) : null,
       }));
 
       alert("Issue updated successfully");
@@ -79,7 +88,6 @@ const IssueDetails = () => {
     try {
       await addComment(issueId, { content: commentText });
       setCommentText("");
-
       const res = await getCommentByIssue(issueId);
       setComments(res.data);
     } catch {
@@ -90,16 +98,30 @@ const IssueDetails = () => {
   if (!issue) return <p className="p-6">Loading issue...</p>;
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 shrink-0">
-        <Sidebar />
-      </div>
+    <div className="flex min-h-screen bg-gray-100">
+      <Sidebar />
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-3xl mx-auto bg-white rounded-md shadow p-6 space-y-5">
-          <h2 className="text-2xl font-semibold">{issue.title}</h2>
+      <div className="flex-1 p-6 py-22">
+        <div className="max-w-3xl mx-auto bg-white rounded-md shadow p-6 space-y-6">
+          
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-semibold">
+              {issue.title} <span className="text-gray-400">#{issue.id}</span>
+            </h2>
+
+            <span
+              className={`text-xs px-2 py-1 rounded font-medium ${
+                status === "OPEN"
+                  ? "bg-gray-200 text-gray-700"
+                  : status === "IN_PROGRESS"
+                  ? "bg-yellow-200 text-yellow-800"
+                  : "bg-green-200 text-green-800"
+              }`}
+            >
+              {status}
+            </span>
+          </div>
 
           {/* Description */}
           <div>
@@ -110,41 +132,38 @@ const IssueDetails = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full border rounded px-3 py-2 focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
-          {/* Assignee */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Assignee ID
-            </label>
-            <input
-              type="number"
-              value={assigneeId}
-              onChange={(e) =>
-                setAssigneeId(
-                  e.target.value === "" ? "" : Number(e.target.value)
-                )
-              }
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
+          {/* Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Assignee ID
+              </label>
+              <input
+                type="number"
+                value={assigneeId}
+                onChange={(e) => setAssigneeId(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
 
-          {/* Status */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Status
-            </label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            >
-              <option value="OPEN">OPEN</option>
-              <option value="IN_PROGRESS">IN_PROGRESS</option>
-              <option value="DONE">DONE</option>
-            </select>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Status
+              </label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+              >
+                <option value="OPEN">OPEN</option>
+                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="DONE">DONE</option>
+              </select>
+            </div>
           </div>
 
           {/* Meta */}
@@ -155,7 +174,6 @@ const IssueDetails = () => {
             <p><b>Updated:</b> {issue.updatedAt}</p>
           </div>
 
-          {/* Update Button */}
           <button
             onClick={handleUpdate}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -164,7 +182,7 @@ const IssueDetails = () => {
           </button>
 
           {/* Comments */}
-          <div className="mt-8 border-t pt-6">
+          <div className="border-t pt-6">
             <h3 className="text-lg font-semibold mb-4">Comments</h3>
 
             {loadcomment ? (
@@ -172,32 +190,27 @@ const IssueDetails = () => {
             ) : comments.length === 0 ? (
               <p className="text-gray-500">No comments yet</p>
             ) : (
-              <div className="space-y-3 mb-6">
+              <div className="space-y-3 mb-4">
                 {comments.map((c) => (
-                  <div
-                    key={c.id}
-                    className="bg-gray-50 border rounded p-3"
-                  >
-                    <p className="text-sm text-gray-800">{c.content}</p>
-                    <div className="text-xs text-gray-400 mt-1">
+                  <div key={c.id} className="bg-gray-50 border rounded p-3">
+                    <p className="text-sm">{c.content}</p>
+                    <p className="text-xs text-gray-400 mt-1">
                       User {c.userId} ·{" "}
                       {new Date(c.createdAt).toLocaleString()}
-                    </div>
+                    </p>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Add Comment */}
             <div className="bg-gray-50 border rounded p-4">
               <textarea
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 rows={3}
                 placeholder="Write a comment..."
-                className="w-full border rounded px-3 py-2 mb-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full border rounded px-3 py-2 mb-2"
               />
-
               <div className="flex justify-end">
                 <button
                   onClick={handleAddComment}
@@ -208,6 +221,7 @@ const IssueDetails = () => {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>

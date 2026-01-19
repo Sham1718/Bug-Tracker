@@ -1,14 +1,10 @@
 package com.project_service.controller;
 
-import com.project_service.dto.CreateProjectRequest;
-import com.project_service.dto.addMemberRequest;
-import com.project_service.dto.updateProject;
-import com.project_service.dto.updateRole;
+import com.project_service.dto.*;
 import com.project_service.model.project;
 import com.project_service.model.project_member;
 import com.project_service.service.projectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -98,6 +94,31 @@ public class projectController {
     ){
         service.deleteProject(projectId,userId);
         return ResponseEntity.ok("Project deleted!");
+    }
+
+    @PutMapping("/{projectId}/members/email")
+    public  ResponseEntity<String> addMemberByEmail(
+            @PathVariable Long projectId,
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody AddMemberByEmail memberRequest
+    ){
+        service.addByEmail(
+                projectId,
+                memberRequest.getEmail(),
+                memberRequest.getRole(),
+                userId
+        );
+        return ResponseEntity.ok("added");
+    }
+
+    @DeleteMapping("/{projectId}/member/delete/{targetedId}")
+    public ResponseEntity<String> deleteMember(
+            @PathVariable Long projectId,
+            @RequestHeader("X-User-Id") Long userID,
+            @PathVariable Long targetedId
+    ){
+        service.deleteMember(projectId,targetedId,userID);
+        return  ResponseEntity.ok("Member Deleted");
     }
 
 }

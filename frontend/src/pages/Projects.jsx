@@ -18,12 +18,12 @@ const Projects = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div className="min-h-screen flex bg-gray-100 ">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 py-22">
         <div className="max-w-4xl bg-white rounded-md shadow p-6">
           <h2 className="text-2xl font-semibold mb-4">My Projects</h2>
 

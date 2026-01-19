@@ -15,4 +15,6 @@ public interface projectService {
     List<project_member>members(Long projectId,Long userId);
     void updateMember(Long projectId, Long targetedUserId,project_Role role ,Long requesterId);
     void deleteProject(Long projectId,Long requesterId);
+    void addByEmail(Long projectId, String email, project_Role role, Long userId);
+    void deleteMember(Long projectId,Long targetedUserId,Long userId);
 }
