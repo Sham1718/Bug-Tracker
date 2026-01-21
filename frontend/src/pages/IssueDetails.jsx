@@ -7,6 +7,7 @@ import {
   updateIssueAssignee,
   updateIssueDescription,
 } from "../api/issue";
+import { getRole } from "../api/project";
 import { getCommentByIssue, addComment } from "../api/comment";
 
 const IssueDetails = () => {
@@ -14,12 +15,15 @@ const IssueDetails = () => {
 
   const [issue, setIssue] = useState(null);
   const [status, setStatus] = useState("");
-  const [assigneeId, setAssigneeId] = useState(""); // KEEP STRING
+  const [assigneeId, setAssigneeId] = useState("");
   const [description, setDescription] = useState("");
+  const [role, setRole] = useState(null);
 
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [loadcomment, setLoadcomment] = useState(true);
+
+  const canEditIssue = role === "OWNER" || role === "MANAGER";
 
   useEffect(() => {
     getIssueById(projectId, issueId)
@@ -39,6 +43,10 @@ const IssueDetails = () => {
       .then((res) => setComments(res.data))
       .catch(() => alert("Failed to load comments"))
       .finally(() => setLoadcomment(false));
+
+    getRole(projectId)
+      .then((res) => setRole(res.data))
+      .catch((e) => console.log(e));
   }, [projectId, issueId]);
 
   const handleUpdate = async () => {
@@ -53,9 +61,7 @@ const IssueDetails = () => {
         assigneeId !== "" &&
         String(assigneeId) !== String(issue.assigneId ?? "")
       ) {
-        updates.push(
-          updateIssueAssignee(issueId, Number(assigneeId))
-        );
+        updates.push(updateIssueAssignee(issueId, Number(assigneeId)));
       }
 
       if (status !== issue.status) {
@@ -103,11 +109,11 @@ const IssueDetails = () => {
 
       <div className="flex-1 p-6 py-22">
         <div className="max-w-3xl mx-auto bg-white rounded-md shadow p-6 space-y-6">
-          
           {/* Header */}
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">
-              {issue.title} <span className="text-gray-400">#{issue.id}</span>
+              {issue.title}{" "}
+              <span className="text-gray-400">#{issue.id}</span>
             </h2>
 
             <span
@@ -132,7 +138,10 @@ const IssueDetails = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full border rounded px-3 py-2 focus:ring-1 focus:ring-blue-500"
+              disabled={!canEditIssue}
+              className={`w-full border rounded px-3 py-2 ${
+                !canEditIssue ? "bg-gray-100 cursor-not-allowed" : ""
+              }`}
             />
           </div>
 
@@ -146,7 +155,10 @@ const IssueDetails = () => {
                 type="number"
                 value={assigneeId}
                 onChange={(e) => setAssigneeId(e.target.value)}
-                className="w-full border rounded px-3 py-2"
+                disabled={!canEditIssue}
+                className={`w-full border rounded px-3 py-2 ${
+                  !canEditIssue ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
               />
             </div>
 
@@ -157,7 +169,10 @@ const IssueDetails = () => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full border rounded px-3 py-2"
+                disabled={!canEditIssue}
+                className={`w-full border rounded px-3 py-2 ${
+                  !canEditIssue ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
               >
                 <option value="OPEN">OPEN</option>
                 <option value="IN_PROGRESS">IN_PROGRESS</option>
@@ -172,14 +187,17 @@ const IssueDetails = () => {
             <p><b>Project ID:</b> {issue.projectId}</p>
             <p><b>Created:</b> {issue.createdAt}</p>
             <p><b>Updated:</b> {issue.updatedAt}</p>
+            <p><b>Your Role:</b> {role}</p>
           </div>
 
-          <button
-            onClick={handleUpdate}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Update Issue
-          </button>
+          {canEditIssue && (
+            <button
+              onClick={handleUpdate}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Update Issue
+            </button>
+          )}
 
           {/* Comments */}
           <div className="border-t pt-6">
@@ -203,6 +221,7 @@ const IssueDetails = () => {
               </div>
             )}
 
+            {/* Add Comment (allowed for all members) */}
             <div className="bg-gray-50 border rounded p-4">
               <textarea
                 value={commentText}

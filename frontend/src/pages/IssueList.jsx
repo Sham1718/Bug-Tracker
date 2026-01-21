@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { getissueByproject } from "../api/issue";
+import { getRole } from "../api/project";
 
 const IssueList = () => {
   const { projectId } = useParams();
@@ -9,6 +10,10 @@ const IssueList = () => {
 
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState(null);
+
+  const canCreateIssue =
+    role === "OWNER" || role === "MANAGER" || role === "DEVELOPER";
 
   const fetchIssue = async () => {
     try {
@@ -23,27 +28,36 @@ const IssueList = () => {
 
   useEffect(() => {
     fetchIssue();
+
+    getRole(projectId)
+      .then((res) => setRole(res.data))
+      .catch((e) => console.log(e));
   }, [projectId]);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content */}
       <div className="flex-1 p-6 py-22">
         <div className="max-w-5xl mx-auto bg-white rounded-md shadow p-6">
           
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold">Issues</h2>
+            <div>
+              <h2 className="text-2xl font-semibold">Issues</h2>
+              <p className="text-sm text-gray-500">Your role: {role}</p>
+            </div>
 
-            <button
-              onClick={() => navigate(`/projects/${projectId}/createIssue`)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Create Issue
-            </button>
+            {canCreateIssue && (
+              <button
+                onClick={() =>
+                  navigate(`/projects/${projectId}/createIssue`)
+                }
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Create Issue
+              </button>
+            )}
           </div>
 
           {/* Content */}
@@ -64,7 +78,6 @@ const IssueList = () => {
                   <div className="flex justify-between items-center">
                     <h3 className="font-medium">{issue.title}</h3>
 
-                    {/* Status Chip */}
                     <span
                       className={`text-xs px-2 py-1 rounded font-medium
                         ${

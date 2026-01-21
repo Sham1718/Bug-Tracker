@@ -17,4 +17,5 @@ public interface projectService {
     void deleteProject(Long projectId,Long requesterId);
     void addByEmail(Long projectId, String email, project_Role role, Long userId);
     void deleteMember(Long projectId,Long targetedUserId,Long userId);
+    project_Role getRole(Long projectId, Long userId);
 }

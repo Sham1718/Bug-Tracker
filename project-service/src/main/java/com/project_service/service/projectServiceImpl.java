@@ -11,9 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.project_service.model.project_Role.OWNER;
@@ -216,5 +214,12 @@ public class projectServiceImpl implements projectService{
            throw new AccessDeniedException("Cannot remove Owner..!");
        }
         memeberRepository.deleteByProjectIdAndUserId(projectId,targetedUserId);
+    }
+
+    @Override
+    public project_Role getRole(Long projectId, Long userId) {
+        project_member member= memeberRepository.findByProjectIdAndUserId(projectId,userId)
+                .orElseThrow(()->new AccessDeniedException("not a project member"));
+       return member.getRole();
     }
 }

@@ -13,7 +13,8 @@ public class EmailService {
     }
 
     public void setMail(String to, String subject, String body) {
-        SimpleMailMessage message =new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("IssueFlow <shambharaskar9766@gmail.com>");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);

@@ -20,12 +20,14 @@ public class IssueServiceIMPL implements IssueService{
     private final IssueRepository repository;
     private final ProjectMemberRepository memberRepository;
     private final NotificationClient client;
+    private final UserClient userClient;
     private final CommentRepository commentRepository;
 
-    public IssueServiceIMPL(IssueRepository repository, ProjectMemberRepository memberRepository, NotificationClient client, CommentRepository commentRepository) {
+    public IssueServiceIMPL(IssueRepository repository, ProjectMemberRepository memberRepository, NotificationClient client, UserClient userClient, CommentRepository commentRepository) {
         this.repository = repository;
         this.memberRepository = memberRepository;
         this.client = client;
+        this.userClient = userClient;
         this.commentRepository = commentRepository;
     }
 
@@ -42,20 +44,27 @@ public class IssueServiceIMPL implements IssueService{
         if (!isMember){
             throw new AccessDeniedException("User is not a project member");
         }
-        if (request.getAssigneId()!=null){
-            client.sendEmail(
-                    "sbharaskar8485@gmail.com",
-                    "Issue Assigned",
-                    "You have been assignee new Issue " + request.getTitle()
-            );
-        }
         Issue issue = new Issue();
         issue.setProjectId(projectId);
         issue.setTitle(request.getTitle());
         issue.setDescription(request.getDescription());
         issue.setPriority(request.getPriority());
         issue.setAssigneId(request.getAssigneId());
-        return repository.save(issue);
+
+        Issue saveIssue =repository.save(issue);
+        if (request.getAssigneId() != null) {
+            String email = userClient.getEmailByUserId(request.getAssigneId());
+
+            client.sendEmail(
+                    email,
+                    "Issue Assigned: " + saveIssue.getTitle(),
+                    "You have been assigned a new issue.\n\n" +
+                            "Issue ID: " + saveIssue.getId() + "\n" +
+                            "Title: " + saveIssue.getTitle()
+            );
+        }
+
+        return saveIssue;
     }
 
     @Override

@@ -37,6 +37,10 @@ export const deleteMember=(projectId,userID)=>{
   return api.delete(`/projects/${projectId}/member/delete/${userID}`)
 
 }
+
+export const getRole=(projectId)=>{
+    return api.get(`projects/${projectId}/getRole`)
+}
 /* =======================
    FUTURE APIs (EMPTY)
    DO NOT IMPLEMENT YET

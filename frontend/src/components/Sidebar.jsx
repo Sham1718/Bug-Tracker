@@ -1,14 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../context/AuthContext";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticate } = useAuth();
+
+  // if (!isAuthenticate) return null;
 
   return (
-    <div className="w-64  bg-white border-r shadow-sm p-4 flex flex-col  h-196 my-19">
+    <div className="w-64 bg-white border-r shadow-sm p-4 flex flex-col min-h-screen py-20">
       
-      {/* Logo / App Name */}
+      {/* Logo */}
       <div
         className="text-2xl font-semibold text-blue-600 mb-10 cursor-pointer"
         onClick={() => navigate("/dashboard")}
@@ -39,15 +42,9 @@ const Sidebar = () => {
           Create Project
         </button>
 
-        {/* Placeholder – wire later */}
+        {/* Kanban – future */}
         <button
-          className="text-left px-3 py-2 rounded text-gray-400 cursor-not-allowed"
-        >
-          Project Settings
-        </button>
-
-        {/* Future Kanban */}
-        <button
+          disabled
           className="text-left px-3 py-2 rounded text-gray-400 cursor-not-allowed"
         >
           Kanban (Coming Soon)
@@ -59,13 +56,12 @@ const Sidebar = () => {
 
       {/* User section */}
       <div className="flex items-center gap-3 border-t pt-4 mt-4">
-        {/* Dummy Avatar */}
         <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-          U
+          {user?.username?.[0]?.toUpperCase() || "U"}
         </div>
 
         <div className="text-sm">
-          <div className="font-medium">User</div>
+          <div className="font-medium">{user?.sub || "User"}</div>
           <div className="text-gray-400 text-xs">Logged in</div>
         </div>
       </div>

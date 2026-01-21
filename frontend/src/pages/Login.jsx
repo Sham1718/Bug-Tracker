@@ -15,7 +15,7 @@ const Login = () => {
     loginUser({
       email:email,
       password:pass})
-    .then((res)=>{login(res.data.token);
+    .then((res)=>{login(res.data.token,email);
     navigate("/dashboard");}
   )
     .catch((e)=>console.log(e)

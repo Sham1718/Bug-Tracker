@@ -1,10 +1,7 @@
 package com.userservice.Controller;
 
 import com.userservice.Service.AuthService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/internal/users")
@@ -18,5 +15,13 @@ public class InternalController {
     @GetMapping("/id-by-email")
     public Long getUserIdByEmail(@RequestParam String email) {
         return service.getUserIdByEmail(email);
+    }
+
+    @GetMapping("/email-by-id")
+    public String getEmailByUserId(
+            @RequestParam Long userId
+    ){
+
+        return service.getEmailByUserId(userId);
     }
 }

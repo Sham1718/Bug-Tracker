@@ -2,6 +2,7 @@ package com.project_service.controller;
 
 import com.project_service.dto.*;
 import com.project_service.model.project;
+import com.project_service.model.project_Role;
 import com.project_service.model.project_member;
 import com.project_service.service.projectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,4 +122,11 @@ public class projectController {
         return  ResponseEntity.ok("Member Deleted");
     }
 
+    @GetMapping("/{projectId}/getRole")
+    public project_Role getCurrentUserRole(
+            @PathVariable Long projectId,
+            @RequestHeader("X-User-Id") Long userId
+    ){
+        return service.getRole(projectId,userId);
+    }
 }

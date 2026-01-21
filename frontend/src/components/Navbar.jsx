@@ -1,18 +1,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/Authcontext";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { token,isAuthenticate,logout } = useAuth();
+  const { token, isAuthenticated, logout, user } = useAuth();
 
   const handleLogout = () => {
-    logout(),
+    logout();
     navigate("/");
   };
 
+  const avatarLetter =
+    user?.sub?.[0]?.toUpperCase() ||
+    user?.email?.[0]?.toUpperCase() ||
+    "U";
+
   return (
-    <nav className="fixed  w-full h-19 bg-white border-b shadow-sm z-50">
+    <nav className="fixed w-full h-19 bg-white border-b shadow-sm z-50">
       <div className="px-8 h-full flex items-center justify-between">
 
         {/* Logo */}
@@ -23,8 +28,8 @@ const Navbar = () => {
           IssueFlow
         </div>
 
-     
-        {!isAuthenticate && (
+        {/* Guest */}
+        {!isAuthenticated && (
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/")}
@@ -42,8 +47,8 @@ const Navbar = () => {
           </div>
         )}
 
-        
-        {isAuthenticate && (
+        {/* Authenticated */}
+        {isAuthenticated && (
           <>
             {/* Center Nav */}
             <div className="flex items-center gap-8">
@@ -82,8 +87,9 @@ const Navbar = () => {
             <div className="flex items-center gap-4">
               <button className="border px-2 py-1 rounded">🌙</button>
 
+              {/* Avatar */}
               <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-                U
+                {avatarLetter}
               </div>
 
               <button
