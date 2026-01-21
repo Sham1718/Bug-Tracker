@@ -1,37 +1,60 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import { useAuth } from "../context/AuthContext";
 
 const DashBoard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const username = user?.sub || "there";
 
   return (
-    <div className=" flex bg-gray-100  ">
-      {/* Sidebar - LEFT */}
-      <Sidebar/>
+    <div className="flex bg-zinc-900 min-h-screen">
+      {/* Sidebar */}
+      <Sidebar />
 
-      {/* Main Content - RIGHT */}
-      <div className="flex-1 flex items-center justify-center main-content">
-        <div className="bg-white p-8 rounded-md shadow w-full max-w-md text-center">
-          <h2 className="text-2xl font-semibold mb-6">Dashboard</h2>
+      {/* Main Content */}
+      <main className="flex-1 ml-64 pt-24 px-10">
+        <div className="max-w-5xl">
 
-          <div className="flex flex-col gap-4">
-            <button
+          {/* Welcome */}
+          <h1 className="text-4xl font-semibold text-zinc-100 mb-2">
+            Welcome back, <span className="text-blue-500">{username}</span>
+          </h1>
+
+          <p className="text-zinc-400 mb-10">
+            Here’s what you can do today.
+          </p>
+
+          {/* Action Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div
               onClick={() => navigate("/createProject")}
-              className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+              className="cursor-pointer bg-zinc-800 border border-zinc-700 rounded-xl p-6 hover:bg-zinc-700 transition"
             >
-              Create Project
-            </button>
+              <h3 className="text-lg font-medium text-zinc-100 mb-1">
+                Create a new project
+              </h3>
+              <p className="text-sm text-zinc-400">
+                Start tracking issues and manage your workflow.
+              </p>
+            </div>
 
-            <button
+            <div
               onClick={() => navigate("/projects")}
-              className="border border-blue-600 text-blue-600 py-2 rounded hover:bg-blue-50"
+              className="cursor-pointer bg-zinc-800 border border-zinc-700 rounded-xl p-6 hover:bg-zinc-700 transition"
             >
-              My Projects
-            </button>
+              <h3 className="text-lg font-medium text-zinc-100 mb-1">
+                View your projects
+              </h3>
+              <p className="text-sm text-zinc-400">
+                Open existing projects and continue work.
+              </p>
+            </div>
           </div>
+
         </div>
-      </div>
+      </main>
     </div>
   );
 };

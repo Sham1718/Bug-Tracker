@@ -1,71 +1,71 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticate } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
-  // if (!isAuthenticate) return null;
+  if (!isAuthenticated) return null;
+
+  const avatarLetter =
+    user?.sub?.[0]?.toUpperCase() ||
+    user?.email?.[0]?.toUpperCase() ||
+    "U";
 
   return (
-    <div className="w-64 bg-white border-r shadow-sm p-4 flex flex-col min-h-screen py-20">
+    <aside className="fixed top-18 left-0 w-64 h-[calc(100vh-72px)] bg-zinc-900 border-r border-zinc-700 flex flex-col px-4 py-6">
       
-      {/* Logo */}
-      <div
-        className="text-2xl font-semibold text-blue-600 mb-10 cursor-pointer"
-        onClick={() => navigate("/dashboard")}
-      >
-        IssueFlow
-      </div>
-
       {/* Navigation */}
-      <nav className="flex flex-col space-y-2 text-sm">
+      <nav className="flex flex-col gap-1 text-sm">
         <button
           onClick={() => navigate("/dashboard")}
-          className="text-left px-3 py-2 rounded hover:bg-gray-100"
+          className="text-left px-3 py-2 rounded-md text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition"
         >
           Dashboard
         </button>
 
         <button
           onClick={() => navigate("/projects")}
-          className="text-left px-3 py-2 rounded hover:bg-gray-100"
+          className="text-left px-3 py-2 rounded-md text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition"
         >
           Projects
         </button>
 
         <button
           onClick={() => navigate("/createProject")}
-          className="text-left px-3 py-2 rounded hover:bg-gray-100"
+          className="text-left px-3 py-2 rounded-md text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition"
         >
           Create Project
         </button>
 
-        {/* Kanban – future */}
+        {/* Future */}
         <button
           disabled
-          className="text-left px-3 py-2 rounded text-gray-400 cursor-not-allowed"
+          className="text-left px-3 py-2 rounded-md text-zinc-500 cursor-not-allowed"
         >
           Kanban (Coming Soon)
         </button>
       </nav>
 
-      {/* Spacer */}
+     
       <div className="flex-grow" />
 
-      {/* User section */}
-      <div className="flex items-center gap-3 border-t pt-4 mt-4">
-        <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-          {user?.username?.[0]?.toUpperCase() || "U"}
+      {/* User */}
+      <div className="flex items-center gap-3 border-t border-zinc-700 pt-4">
+        <div className="w-9 h-9 rounded-full bg-zinc-700 text-zinc-100 flex items-center justify-center text-sm font-medium">
+          {avatarLetter}
         </div>
 
-        <div className="text-sm">
-          <div className="font-medium">{user?.sub || "User"}</div>
-          <div className="text-gray-400 text-xs">Logged in</div>
+        <div className="text-sm leading-tight">
+          <div className="text-zinc-100 font-medium">
+            {user?.sub || "User"}
+          </div>
+          <div className="text-zinc-400 text-xs">
+            Logged in
+          </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 };
 

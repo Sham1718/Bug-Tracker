@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { getissueByproject } from "../api/issue";
@@ -13,39 +13,32 @@ const IssueList = () => {
   const [role, setRole] = useState(null);
 
   const canCreateIssue =
-    role === "OWNER" || role === "MANAGER" || role === "DEVELOPER";
-
-  const fetchIssue = async () => {
-    try {
-      const res = await getissueByproject(projectId);
-      setIssues(res.data);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+    role === "OWNER" || role === "MANAGER" || role === "TESTER";
 
   useEffect(() => {
-    fetchIssue();
+    getissueByproject(projectId)
+      .then((res) => setIssues(res.data))
+      .finally(() => setLoading(false));
 
-    getRole(projectId)
-      .then((res) => setRole(res.data))
-      .catch((e) => console.log(e));
+    getRole(projectId).then((res) => setRole(res.data));
   }, [projectId]);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex bg-zinc-900 min-h-screen">
       <Sidebar />
 
-      <div className="flex-1 p-6 py-22">
-        <div className="max-w-5xl mx-auto bg-white rounded-md shadow p-6">
-          
+      <main className="flex-1 ml-64 pt-24 px-10">
+        <div className="max-w-6xl">
+
           {/* Header */}
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-8">
             <div>
-              <h2 className="text-2xl font-semibold">Issues</h2>
-              <p className="text-sm text-gray-500">Your role: {role}</p>
+              <h1 className="text-3xl font-semibold text-zinc-100">
+                Issues
+              </h1>
+              <p className="text-sm text-zinc-400">
+                Your role: {role}
+              </p>
             </div>
 
             {canCreateIssue && (
@@ -53,7 +46,7 @@ const IssueList = () => {
                 onClick={() =>
                   navigate(`/projects/${projectId}/createIssue`)
                 }
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-md text-sm font-medium transition"
               >
                 Create Issue
               </button>
@@ -62,30 +55,32 @@ const IssueList = () => {
 
           {/* Content */}
           {loading ? (
-            <p className="text-gray-500">Loading issues...</p>
+            <p className="text-zinc-400">Loading issues...</p>
           ) : issues.length === 0 ? (
-            <p className="text-gray-500">No issues found</p>
+            <p className="text-zinc-500">No issues found.</p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {issues.map((issue) => (
                 <div
                   key={issue.id}
                   onClick={() =>
                     navigate(`/projects/${projectId}/${issue.id}`)
                   }
-                  className="border rounded p-4 cursor-pointer hover:bg-gray-50 transition"
+                  className="cursor-pointer bg-zinc-800 border border-zinc-700 rounded-lg px-5 py-4 hover:bg-zinc-700 transition"
                 >
                   <div className="flex justify-between items-center">
-                    <h3 className="font-medium">{issue.title}</h3>
+                    <h3 className="text-zinc-100 font-medium">
+                      {issue.title}
+                    </h3>
 
                     <span
                       className={`text-xs px-2 py-1 rounded font-medium
                         ${
                           issue.status === "OPEN"
-                            ? "bg-gray-200 text-gray-700"
+                            ? "bg-zinc-700 text-zinc-200"
                             : issue.status === "IN_PROGRESS"
-                            ? "bg-yellow-200 text-yellow-800"
-                            : "bg-green-200 text-green-800"
+                            ? "bg-yellow-600/20 text-yellow-400"
+                            : "bg-green-600/20 text-green-400"
                         }
                       `}
                     >
@@ -93,15 +88,16 @@ const IssueList = () => {
                     </span>
                   </div>
 
-                  <p className="text-sm text-gray-500 mt-1">
-                    Assignee: {issue.assigneId ?? "Unassigned"}
+                  <p className="text-sm text-zinc-400 mt-1">
+                    Assignee:{" "}
+                    {issue.assigneId ?? "Unassigned"}
                   </p>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };
