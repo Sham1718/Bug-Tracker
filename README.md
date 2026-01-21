@@ -4,7 +4,7 @@ IssueFlow is a Jira-inspired issue tracking system built using a microservices a
 It supports project management, role-based access control, issue tracking, comments,
 and email notifications.
 
-This project was developed as a Final Year Project (FYP) to demonstrate real-world
+This project was developed as  to demonstrate real-world
 backend architecture, security, and frontend integration.
 
 --------------------------------------------------------------------
@@ -166,7 +166,7 @@ PROJECT STATUS
 --------------------------------------------------------------------
 
 LICENSE
-This project is developed for academic purposes as a Final Year Project.
+This project is developed for academic purposes.
 
 --------------------------------------------------------------------
 
