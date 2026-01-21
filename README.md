@@ -143,17 +143,7 @@ FRONTEND SETUP
    npm install
    npm start
 
---------------------------------------------------------------------
 
-DEMO FLOW (RECOMMENDED)
-1. Register and Login
-2. Create a Project
-3. Add Member by Email
-4. Create Issue
-5. Assign Issue (Email sent)
-6. Add Comment
-7. Update Issue Status
-8. Delete Project (Owner only)
 
 --------------------------------------------------------------------
 
