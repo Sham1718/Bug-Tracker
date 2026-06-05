@@ -1,67 +1,181 @@
 # IssueFlow – Jira-like Issue Tracking System (Microservices)
 
-IssueFlow is a Jira-inspired issue tracking system built using a microservices architecture.
-It supports project management, role-based access control, issue tracking, comments,
-and email notifications.
+## Summary
+A Jira-inspired microservices-based issue tracking platform with JWT authentication, role-based access control, project management, issue tracking, comments, and email notifications.
 
-This project was developed as  to demonstrate real-world
-backend architecture, security, and frontend integration.
+---
 
---------------------------------------------------------------------
+# Overview
 
-FEATURES
+IssueFlow is a full-stack issue tracking system inspired by Jira and built using a microservices architecture. The platform enables teams to manage projects, track issues, collaborate through comments, and enforce role-based permissions across the system.
 
-AUTHENTICATION & AUTHORIZATION
+The project was developed to demonstrate:
+- Real-world microservices architecture
+- Secure authentication and authorization
+- Service-to-service communication
+- Project and issue lifecycle management
+- Frontend and backend integration
+
+IssueFlow supports multiple user roles and provides controlled access to projects, issues, comments, and administrative actions.
+
+---
+
+# Problem Statement
+
+Managing software projects requires:
+- Organized issue tracking
+- Controlled team collaboration
+- Secure access management
+- Scalable backend architecture
+- Automated notifications
+
+Traditional monolithic systems can become difficult to maintain and scale.
+
+IssueFlow addresses these challenges through:
+- Microservices architecture
+- Role-based access control
+- JWT authentication
+- Project-based issue management
+- Automated email notifications
+
+to provide a scalable and secure issue tracking solution.
+
+---
+
+# Tools and Tech
+
+## Backend
+- Java 17
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- JWT
+- MySQL
+- REST APIs
+
+## Microservices & Cloud
+- Spring Cloud
+- Eureka Service Discovery
+- OpenFeign
+- RestTemplate
+- API Gateway
+
+## Frontend
+- React.js
+- React Router
+- Axios
+- Context API
+- Tailwind CSS
+
+## Development Tools
+- Maven
+- Postman
+- Git & GitHub
+
+---
+
+# Methods
+
+## Authentication & Authorization
+
 - JWT-based authentication
-- Secure login and registration
+- Secure registration and login
 - Stateless authentication
-- Role-based access control (OWNER, MANAGER, DEVELOPER, TESTER)
+- Role-Based Access Control (RBAC)
 
-PROJECT MANAGEMENT
-- Create and manage projects
+### Supported Roles
+
+- OWNER
+- MANAGER
+- DEVELOPER
+- TESTER
+
+---
+
+## Project Management
+
+- Create projects
 - Unique project keys
-- Project membership system
+- Manage project members
 - Add members by email
-- Remove members
-- Role-based permissions
-- Project settings (Owner / Manager only)
-- Delete project (Owner only)
+- Remove project members
+- Project settings management
+- Owner-only project deletion
 
-ISSUE MANAGEMENT
-- Create issues under projects
+### Permission Rules
+
+- Owner and Manager can manage members
+- Owner and Manager can update project settings
+- Owner can delete projects
+
+---
+
+## Issue Management
+
+- Create issues within projects
 - Assign issues to project members
-- Update issue status (OPEN, IN_PROGRESS, DONE)
-- Update issue description and assignee
-- Issue visibility restricted to project members
+- Update issue descriptions
+- Change assignees
+- Update issue status
 
-COMMENTS
+### Supported Statuses
+
+- OPEN
+- IN_PROGRESS
+- DONE
+
+### Access Control
+
+- Only project members can access project issues
+
+---
+
+## Comments System
+
 - Add comments to issues
-- Fetch comments per issue
-- Access limited to project members
+- Retrieve issue comments
+- Permission-controlled access
+- Member-only visibility
 
-EMAIL NOTIFICATIONS
-- Email sent on issue creation (when assigned)
-- Email sent on issue reassignment
+---
+
+## Email Notifications
+
+- Notification on issue creation
+- Notification on reassignment
+- Centralized notification service
+- SMTP integration
+- Failure-safe implementation
+
+### Notification Features
+
 - No duplicate emails
-- Email failure does NOT break issue create/update flow
-- Central notification service using SMTP
+- Email failures do not break business logic
 
-PERMISSION BASED UI
-- UI actions enabled/disabled based on user role
-- Owners / Managers can add or remove members
-- Owners / Managers can update project settings
-- Restricted access for non-privileged members
+---
 
---------------------------------------------------------------------
+## Permission-Based UI
 
-MICROSERVICES ARCHITECTURE
+Frontend actions dynamically change based on user roles.
 
+### Examples
+
+- Owners and Managers can manage members
+- Owners and Managers can modify project settings
+- Non-privileged users have restricted access
+- Role-specific actions enabled/disabled automatically
+
+---
+
+## Microservices Architecture
+
+```plaintext
 API-GATEWAY
 |
 |-- USER-SERVICE
 |     - Authentication
-|     - JWT handling
-|     - User management
+|     - JWT Handling
+|     - User Management
 |
 |-- PROJECT-SERVICE
 |     - Projects
@@ -74,92 +188,136 @@ API-GATEWAY
 |     - Assignment
 |
 |-- NOTIFICATION-SERVICE
-|     - Email notifications
+|     - Email Notifications
 |
 |-- SERVICE-DISCOVERY (Eureka)
+```
 
---------------------------------------------------------------------
+---
 
-TECH STACK
+## Security Highlights
 
-BACKEND
-- Java 17
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- Spring Cloud (Eureka, OpenFeign)
-- JWT
-- MySQL
-- REST APIs
-
-FRONTEND
-- React.js
-- React Router
-- Axios
-- Context API
-- Tailwind CSS
-
-DEV TOOLS
-- Eureka Service Discovery
-- OpenFeign / RestTemplate
-- Postman
-- Git & GitHub
-
---------------------------------------------------------------------
-
-SECURITY HIGHLIGHTS
 - Stateless JWT authentication
-- Internal service-to-service communication
-- Secured internal endpoints
-- Role validation at backend and frontend
+- Service-to-service communication
+- Protected internal APIs
+- Backend role validation
+- Frontend role validation
 - No sensitive data stored on frontend
 
---------------------------------------------------------------------
+---
 
-INSTALLATION & SETUP
 
-PREREQUISITES
-- Java 17 or higher
+# How to Run Project
+
+## Prerequisites
+
+- Java 17+
 - Node.js
 - MySQL
 - Maven
 
-BACKEND SETUP
-1. Start Eureka Server
-2. Start services in the following order:
-   - User Service
-   - Project Service
-   - Issue Service
-   - Notification Service
-   - API Gateway
-3. Configure application.properties:
-   - Database connection
-   - SMTP email credentials
-   - Eureka server URL
+---
 
-FRONTEND SETUP
-1. Navigate to frontend directory
-2. Run:
-   npm install
-   npm start
+## Backend Setup
 
+### Step 1: Start Eureka Server
 
+Start the Service Discovery Server first.
 
---------------------------------------------------------------------
+---
 
-PROJECT STATUS
-- Core features completed
-- Permission-based UI implemented
-- Email notifications stable
-- Submission-ready (FYP)
+### Step 2: Start Services in Order
 
---------------------------------------------------------------------
+```text
+1. User Service
+2. Project Service
+3. Issue Service
+4. Notification Service
+5. API Gateway
+```
 
-LICENSE
-This project is developed for academic purposes.
+---
 
---------------------------------------------------------------------
+### Step 3: Configure Application Properties
 
-AUTHOR
-Shyam
+Update:
+
+```properties
+application.properties
+```
+
+Configure:
+
+```properties
+spring.datasource.url=your_database_url
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+
+spring.mail.username=your_email
+spring.mail.password=your_email_password
+
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+```
+
+---
+
+### Step 4: Run Services
+
+```bash
+mvn spring-boot:run
+```
+
+Run each microservice individually.
+
+---
+
+## Frontend Setup
+
+Navigate to frontend directory:
+
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start frontend:
+
+```bash
+npm start
+```
+
+---
+
+# Result
+
+Successfully developed a Jira-inspired issue tracking platform featuring:
+
+- JWT Authentication
+- Role-Based Access Control
+- Project Management
+- Issue Tracking
+- Comments System
+- Email Notifications
+- Permission-Based UI
+- Microservices Architecture
+- Service Discovery
+- API Gateway Integration
+
+The project demonstrates strong understanding of modern backend architecture, distributed systems, secure application development, and enterprise-level software design.
+
+---
+
+# Author and Contact
+
+## Author
+Shyam Bharaskar
 Computer Engineering Student
+
+## Contact
+- GitHub: https://github.com/Sham1718
+- Portfolio: https://shyam-neon.vercel.app/
