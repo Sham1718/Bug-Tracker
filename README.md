@@ -320,4 +320,4 @@ Computer Engineering Student
 
 ## Contact
 - GitHub: https://github.com/Sham1718
-- Portfolio: https://shyam-neon.vercel.app/
+- Portfolio: https://shyambharaskar.vercel.app/
