@@ -12,6 +12,7 @@ import CreateIssue from "./pages/CreateIssue";
 import IssueDetails from "./pages/IssueDetails";
 import IssueList from './pages/IssueList';
 import ProjectSetting from './pages/ProjectSetting'
+import { Navigate } from 'react-router-dom';
 
 
 
@@ -21,11 +22,18 @@ function App() {
     <Navbar/>
       <Routes>
 
-        {/* ✅ Public Routes (NO fixed sidebar/nav if you want) */}
-        <Route path="/" element={<Login />} />
+  
+       <Route
+  path="/"
+  element={
+    localStorage.getItem("token")
+      ? <Navigate to="/dashboard" replace />
+      : <Login />
+  }
+/>
         <Route path="/register" element={<Register />} />
 
-        {/* ✅ Protected Routes (Navbar + Sidebar fixed always) */}
+     
         <Route
           path="/dashboard"
           element={

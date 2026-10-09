@@ -8,17 +8,19 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { registerToken } = useAuth();
+  const { login } = useAuth();
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
       const res = await register({ username, email, password });
-      registerToken(res.data.token);
+      login(res.data.token);
       navigate("/dashboard");
-    } catch {
+    } catch(error) {
       alert("Registration failed. Username or email may already exist.");
+      console.error(error);
+      
     }
   };
 

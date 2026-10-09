@@ -29,7 +29,7 @@ const Navbar = () => {
             IssueFlow
           </div>
 
-          {/* Auth Nav */}
+        
           {isAuthenticated && (
             <div className="flex items-center gap-6">
               <button
